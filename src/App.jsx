@@ -1318,16 +1318,19 @@ function App() {
 
     }
 
-    function move(currentSquareIndex, token, steps) {
-        if (token != activePlayer) { return; }
-        else if (!steps) { return; }
+    function move(currentSquareIndex, token, steps, dryRun = true) {
+        if (token != activePlayer) { return false; }
+        else if (!steps) { return false; }
         else if (paths[token].indexOf(currentSquareIndex) + 1 == pathLength) {
             //already on last square
-            return;
+            return false;
         }
         else if (homes[token].includes(currentSquareIndex) && steps != maxRoll) {
-            alert("Invalid move! Pass if no moves available.");
-            return;
+            if (!dryRun) {
+                alert("Invalid move! Pass if no moves available.");
+            }
+
+            return false;
         }
 
         let nextPathIndex = homes[token].includes(currentSquareIndex) ? 0 : paths[token].indexOf(currentSquareIndex) + steps;
@@ -1336,32 +1339,40 @@ function App() {
         // console.log(`move ${token} ${steps} steps from square ${currentSquareIndex} to ${nextSquareIndex}`);
 
         if (nextSquareIndex == null) {
-            alert(`Invalid move! Cannot move ${steps} steps from current position! Pass if no moves available.`);
-            return;
+            if (!dryRun) {
+                alert(`Invalid move! Cannot move ${steps} steps from current position! Pass if no moves available.`);
+            }
+            return false;
         }
 
         let nextSquares = squares.slice();
         if (nextSquares[nextSquareIndex]?.tokens?.length > 0) {
-            alert("Invalid move! Cannot have 2 tokens in the same square. Pass if no moves available.");
-            return;
+            if (!dryRun) {
+                alert("Invalid move! Cannot have 2 tokens in the same square. Pass if no moves available.");
+            }
+            return false;
         }
 
-        nextSquares[currentSquareIndex].tokens.pop(token);
+        if (!dryRun) {
+            nextSquares[currentSquareIndex].tokens.pop(token);
 
-        if (nextSquares[nextSquareIndex]?.tokens) {
-            nextSquares[nextSquareIndex].tokens.push(token);
-        }
-        else {
-            nextSquares[nextSquareIndex].tokens = [token];
+            if (nextSquares[nextSquareIndex]?.tokens) {
+                nextSquares[nextSquareIndex].tokens.push(token);
+            }
+            else {
+                nextSquares[nextSquareIndex].tokens = [token];
+            }
+
+            if (nextPathIndex == paths[token].length - 1) {
+                alert(`Congrats ${activePlayer}!`);
+                nextSquares[nextSquareIndex].tokens = [];
+            }
+
+            setSquares(nextSquares);
+            askNextPlayerToRoll();
         }
 
-        if (nextPathIndex == paths[token].length - 1) {
-            alert(`Congrats ${activePlayer}!`);
-            nextSquares[nextSquareIndex].tokens = [];
-        }
-
-        setSquares(nextSquares);
-        askNextPlayerToRoll();
+        return true;
     }
 
     function askNextPlayerToRoll() {
@@ -1429,7 +1440,7 @@ function App() {
 
                         {
                             sq.tokens?.map((token, tokenIndex) => (
-                                players[token] ? <button key={`${token}-${tokenIndex}`} className={`${token}-token`} onClick={() => { move(index, token, numberRolledByActivePlayer) }} style={{ width: "80%", height: "80%", backgroundColor: `${token}`, borderRadius: "100%", border: "1px solid darkslategrey" }}></button> : <></>
+                                players[token] ? <button key={`${token}-${tokenIndex}`} className={`${token}-token`} onClick={() => { move(index, token, numberRolledByActivePlayer, false) }} style={{ width: "80%", height: "80%", backgroundColor: `${token}`, borderRadius: "100%", border: "1px solid darkslategrey" }}></button> : <></>
                             ))
                         }
                     </div>
