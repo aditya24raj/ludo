@@ -1,0 +1,85 @@
+* {
+    box-sizing: border-box;
+    /* font-family: monospace; */
+}
+
+body {
+    margin: 20px;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.board-row {
+    height: 44px;
+    width: fit-content;
+}
+
+.square {
+    min-width: 10px;
+    min-height: 10px;
+    border-top: 1px solid darkslategrey;
+    border-left: 1px solid darkslategrey;
+}
+
+.red {
+    background-color: lightsalmon;
+    /* border-color: red; */
+}
+
+.green {
+    background-color: lightgreen;
+    /* border-color: green; */
+}
+
+.blue {
+    background-color: lightblue;
+    /* border-color: blue; */
+}
+
+.yellow {
+    background-color: lightgoldenrodyellow;
+    /* border-color: orange; */
+}
+
+.gray {
+    background-color: antiquewhite;
+    /* border-color: black; */
+}
+
+.multi-token {
+    position: relative;
+}
+
+.single-token {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.multi-token .red-token {
+    position: absolute;
+    top: 5%;
+    right: -30%;
+    z-index: 1;
+}
+
+.multi-token .green-token {
+    position: absolute;
+    top: 40%;
+    left: -25%;
+    z-index: 1;
+}
+
+.multi-token .yellow-token {
+    position: absolute;
+    top: -50%;
+    left: -25%;
+    z-index: 1;
+}
+
+.multi-token .blue-token {
+    position: absolute;
+    bottom: -40%;
+    right: -25%;
+    z-index: 1;
+}
