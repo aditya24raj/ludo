@@ -7,6 +7,13 @@ function App() {
     const defaultPlayers = { "red": true, "green": true, "yellow": true, "blue": true };
     let [players, setPlayers] = useState(defaultPlayers);
 
+    const backgroundColorMap = {
+        "red": "lightsalmon",
+        "green": "lightgreen",
+        "yellow": "lightgoldenrodyellow",
+        "blue": "lightblue"
+    }
+
     function setTwoPlayerMode() {
         if (confirm("Game progress will be lost. continue?")) {
             setPlayers({ "red": true, "green": false, "yellow": true, "blue": false });
@@ -1469,23 +1476,48 @@ function App() {
 
 
                     <div style={{ marginTop: "60px" }}>
-                        <button style={{ height: "100px", width: "150px" }} onClick={roll}>
-                            {activePlayer?.toUpperCase()}, Tap to roll
+                        <button 
+                            style={{ 
+                                height: "100px", 
+                                width: "100px",
+                                backgroundColor: backgroundColorMap[activePlayer],
+                                border: "2px dashed black",
+                                borderRadius: "30px",
+                                fontWeight: "bolder",
+                                fontSize: "medium"
+                        
+                            }}
+                
+                            onClick={roll}
+                        >
+                            {
+                                numberRolledByActivePlayer
+                                    ?
+                                   <div>
+                                   {numberRolledByActivePlayer}
+                                   </div>
+                                    : <>Roll</>
+                            }
                         </button>
-
-                        <button style={{ marginLeft: "10px", height: "100px" }} onClick={askNextPlayerToRoll} disabled={isPassDisabled}>
-                            Pass, If no moves available
+                    
+                        <button
+                            style={{
+                                marginLeft: "10px", 
+                                height: "100px",
+                                width: "150px",
+                                backgroundColor: "lavender",
+                                border: "2px solid " + (isPassDisabled ? "gray" : "black"),
+                                borderRadius: "60px",
+                                fontWeight: "bolder",
+                                fontSize: "medium"
+                            }} 
+                            
+                            onClick={askNextPlayerToRoll} 
+                            disabled={isPassDisabled}
+                        >
+                            Pass
                         </button>
                     </div>
-
-                    <p>
-                        {
-                            numberRolledByActivePlayer
-                                ?
-                                <>You rolled a {numberRolledByActivePlayer}.</>
-                                : <></>
-                        }
-                    </p>
                 </div>
             </div>
         </div>
