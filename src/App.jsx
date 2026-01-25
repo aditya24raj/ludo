@@ -44,6 +44,9 @@ function App() {
     const defaultNumberRolledByActivePlayer = null;
     let [numberRolledByActivePlayer, setNumberRolledByActivePlayer] = useState(defaultNumberRolledByActivePlayer);
 
+    const defaultIsPassDisabled = true;
+    let [isPassDisabled, setIsPassDisabled] = useState(defaultIsPassDisabled);
+
     const defaultSquares = [
         {
             "key": 0,
@@ -1306,6 +1309,7 @@ function App() {
         setActivePlayer(defaultActivePlayer);
         setNumberRolledByActivePlayer(defaultNumberRolledByActivePlayer);
         setSquares(defaultSquares);
+        setIsPassDisabled(defaultIsPassDisabled);
     }
 
     function roll() {
@@ -1313,9 +1317,16 @@ function App() {
             return; // there is already a rolled dice, let it be consumed first
         }
 
-        setNumberRolledByActivePlayer(Math.floor(Math.random() * maxRoll) + 1);
+        const steps = Math.floor(Math.random() * maxRoll) + 1;
+        setNumberRolledByActivePlayer(steps);
         // setNumberRolledByActivePlayer(6);
 
+        const isValidMoveAvailable = squares.find(
+            i => i.tokens?.includes(activePlayer) && move(i.key, activePlayer, steps, true)
+        ) !== undefined;
+
+
+        setIsPassDisabled(isValidMoveAvailable); // Enable passing if no valid moves are available
     }
 
     function move(currentSquareIndex, token, steps, dryRun = true) {
@@ -1414,6 +1425,7 @@ function App() {
         }
 
         setNumberRolledByActivePlayer(null);
+        setIsPassDisabled(true);
     }
 
     return (
@@ -1461,7 +1473,7 @@ function App() {
                             {activePlayer?.toUpperCase()}, Tap to roll
                         </button>
 
-                        <button style={{ marginLeft: "10px", height: "100px" }} onClick={askNextPlayerToRoll}>
+                        <button style={{ marginLeft: "10px", height: "100px" }} onClick={askNextPlayerToRoll} disabled={isPassDisabled}>
                             Pass, If no moves available
                         </button>
                     </div>
